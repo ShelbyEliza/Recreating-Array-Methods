@@ -1,0 +1,55 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.shift();
+
+
+// Definition:
+// A. It should remove the first element in the array.
+// B. It should return the element removed.
+// C. It should return undefined if the array is empty. 
+// D. It should change the length of the orginal array. 
+
+// Returns the removed element or undefined if the array is empty. 
+
+// Actual Code:
+function shift(array) {
+  if (array.length === 0) {
+    return undefined;
+  };
+
+  var firstElement = array[0];
+
+  for(var i = 1; i < array.length; i++) {
+    array[i - 1] = array[i];
+  };
+
+  array.length--;
+
+  return firstElement; 
+};
+
+  tests({
+    'A. It should remove the first element in the array.': function() {
+      var trees = ['pine', 'cherry', 'holly', 'maple'];
+      var treeShift = shift(trees);
+      eq(JSON.stringify(trees), JSON.stringify(['cherry', 'holly', 'maple']))
+    },
+    'B. It should return the element removed.': function() {
+      var trees = ['pine', 'cherry', 'holly', 'maple'];
+      var treeShift = shift(trees);
+      eq(JSON.stringify(treeShift), JSON.stringify('pine'))
+    },
+    'C. It should return undefined if the array is empty.': function() {
+      var trees = [];
+      var treeShift = shift(trees);
+      eq(treeShift, undefined);
+    },   
+    'D. It should change the length of the orginal array.': function() {
+      var trees = ['pine', 'cherry', 'holly', 'maple'];
+      var treeShift = shift(trees);
+      eq(trees.length, 3)
+    }
+  });
+</script>

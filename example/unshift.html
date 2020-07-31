@@ -1,0 +1,59 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.unshift(element[, ... [, elementN]]);
+
+
+// Definition:
+// A. It should add one or more elements the beginning of the array.
+// B. It should accept one or more elements to add. 
+// C. It should return the new length of the array.
+// D. It should keep nested arrays nested
+// E. It should keep nested arrays nested, with accurate length reading.
+
+// Returns new length of array. 
+
+// Actual Code:
+function unshift(array, newItem) {
+  var arrayLimit = arguments.length - 1;  
+
+  for(var i = array.length -1; i > -1; i--) {
+    array[i + arrayLimit] = array[i] 
+  };
+  for(var i = 1; i < arguments.length; i++) {
+    array[i - 1] = arguments[i];
+  };
+
+ 
+  return array.length;
+};
+
+  tests({
+    'A. It should add one or more elements the beginning of the array.': function() {
+      var vegetables = ['broccoli', 'squash'];
+      var vegetablesUnshift = unshift(vegetables, 'corn');
+      eq(JSON.stringify(vegetables), JSON.stringify(['corn', 'broccoli', 'squash']))
+    },
+    'B. It should accept one or more elements to add. ': function() {
+      var vegetables = ['broccoli', 'squash'];
+      var vegetablesUnshift = unshift(vegetables, 'corn', 'onions');
+      eq(JSON.stringify(vegetables), JSON.stringify(['corn', 'onions', 'broccoli', 'squash']))
+    },
+    'C. It should return the new length of the array.': function() {
+      var vegetables = ['broccoli', 'squash'];
+      var vegetablesUnshift = unshift(vegetables, 'corn', 'onions');
+      eq(vegetablesUnshift, 4)
+    },
+    'D. It should keep nested arrays nested.': function() {
+      var vegetables = ['broccoli', 'squash'];
+      var vegetablesUnshift = unshift(vegetables, ['corn'], 'onions');
+      eq(JSON.stringify(vegetables), JSON.stringify([['corn'], 'onions', 'broccoli', 'squash']))
+    },
+    'E. It should keep nested arrays nested, with accurate length reading.': function() {
+      var vegetables = ['broccoli', 'squash'];
+      var vegetablesUnshift = unshift(vegetables, ['corn', 'onions']);
+      eq(vegetablesUnshift, 3)
+    }
+  });
+</script>

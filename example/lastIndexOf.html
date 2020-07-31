@@ -1,0 +1,107 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// string.lastIndexOf(searchValue[, fromIndex]);
+
+// Definition:
+// A. It should pass the search element as the first parameter. 
+// B. It should pass the fromIndex as the second parameter, if given. 
+// C. It should return the index of the searchElement in its last instance, if no fromIndex.
+// D. It should return -1, if no index is found. 
+// E. It should return the fromIndex if the searchValue is an empty string.
+// F. It should return the length of the string if searchValue is empty and no fromIndex.
+// G. It should start off with fromIndex = 0, if given a negative fromIndex.
+// H. It should move left if fromIndex is given, including that fromIndex.
+// I. It should use strict equals. 
+
+// Returns the last index of the searchValue provided. 
+
+// Example: 
+// var fruit = ['I love apple pie, apple juice, appletinis, and apple sauce.'];
+// console.log(fruit.lastIndexOf('apple'));
+// expected: 42
+// console.log(fruit.lastIndexOf('apple', 22));
+// expected: 20
+
+
+// Actual Code:
+function lastIndexOf(searchElement, fromIndex) {
+  var searchStart = string.length -1;
+  var returnIndex = -1;
+
+  if (fromIndex) {
+    searchStart = fromIndex;
+      if(searchElement === '') {
+        returnIndex = fromIndex;
+        break;
+      }
+      if(fromIndex < 0) {
+        fromIndex = 0; 
+      }
+      if(fromIndex >= arguments.length) {
+        searchStart = arguments.length -1;
+      }
+  } else {
+      if(searchElement === '') {
+          returnIndex = arguments.length;
+          break;
+        }
+        for(var i = searchStart; i >= 0; i--) {
+          if (searchElement === string[i]) {
+              returnIndex = i;
+          }
+        }
+      }
+  return returnIndex;
+};
+
+  tests({
+    'A. It should pass the search element as the first parameter. ': function() {
+      var string = 'pie_pie_pie';
+      var pieIndex = string.lastIndexOf('pie');
+      eq(pieIndex, 8)
+    },
+    'B. It should pass the fromIndex as the second parameter, if given.': function() {
+      var string = 'pie_pie_pie';
+      //            012345678910
+      var pieIndex = string.lastIndexOf('pie', 7);
+      eq(pieIndex, 4)
+    },
+    'C. It should return the index of the searchElement in its last instance, if no fromIndex.': function() {
+      var string = 'pie_pie_pie';
+      var pieIndex = string.lastIndexOf('pie');
+      eq(pieIndex, 8)
+    },   
+    'D. It should return -1, if no index is found. ': function() {
+      var string = 'pie_pie_pie';
+      var pieIndex = string.lastIndexOf('cake');
+      eq(pieIndex, -1)
+    }, 
+    'E. It should return the fromIndex if the searchValue is an empty string.': function() {
+      var string = 'pie_pie_pie';
+      var pieIndex = string.lastIndexOf('', 2);
+      eq(pieIndex, 2)
+    },
+    'F. It should return the length of the string if searchValue is empty and no fromIndex.': function() {
+      var string = 'pie';
+      var pieIndex = string.lastIndexOf('');
+      eq(pieIndex, 3)
+    },
+    'G. It should start off with fromIndex = 0, if given a negative fromIndex.': function() {
+      var string = 'pie_pie_pie';
+      var pieIndex = string.lastIndexOf('pie', -1);
+      eq(pieIndex, 0)
+    },
+    'H. It should search the whole string if fromIndex is greater than or equal to string.length': function() {
+      var string = 'pie_pie_pie';
+      var pieIndex = string.lastIndexOf('pie', 12);
+      eq(pieIndex, 8)
+    },
+    'I. It should use strict equals.': function() { 
+      var string = 'pie_pie_pie';
+      var pieIndex = string.lastIndexOf('Pie');
+      eq(pieIndex, -1)
+    }
+  });
+</script>

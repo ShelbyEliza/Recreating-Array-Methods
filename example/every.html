@@ -1,0 +1,131 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.every(callback(element[, index[, array]])[, thisArguement]);
+// array.every(function(currentValue, index, array), thisValue);
+
+// Definition:
+// A. It should pass the currentValue as the first position in callback parameter. 
+// B. It should pass the ith position as the second position in callback parameter. 
+// C. It should pass the array as the third position in callback parameter.
+// D. It should accept an optional this arguement. 
+// E. It should return a true if every element in an array satisfies a condition.
+// F. If no value satisfies condition, it should return false. 
+// G. It should run on every element in the array until an element returns false. 
+// H. It should return true for empty arrays.
+// I. It should not run on elements in the array with missing values.
+// J. It should only execute on the original array. 
+
+// Callback parameters: 
+// currentValue, 
+// index, 
+// array 
+
+// Returns a boolean value. 
+
+// Example: 
+// var arrayOfAges = [8, 20, 3, 44, 15];
+// function isAnAdult (age) {
+//   return age >= 18;  
+// };
+// arrayOfAges.every(isAnAdult);
+// expected: false
+
+// Actual Code:
+function every(array, callback, optionalThis) {
+  var everyCallback = callback;
+  var arrayIndexes = Object.keys(array);
+  var returnVal = false; 
+
+// if optionalThis exists, bind everyCallback to this.
+  if (optionalThis) {
+    everyCallback = callback.bind(optionalThis);
+  }
+
+// if array is empty return true
+  if (arrayIndexes.length === 0) {
+      returnVal = true;
+    };
+
+// for each element, check if condition is true, if so return true. 
+  for (var i = 0; i < array.length; i++){
+    if (everyCallback(array[i], i, array) === true) {
+      returnVal = true;
+    } else {
+      returnVal = false; 
+      return returnVal;
+    }
+   }
+   return returnVal;
+};
+
+  tests({
+    'A. It should pass the currentValue as the first position in callback parameter.': function() {
+      // fail();
+      every([1], function (currentValue) {
+      eq(currentValue, 1)
+     });
+    },
+    'B. It should pass the ith position as the second position in callback parameter.': function() {
+      // fail();
+      every([1], function(currentValue, index){
+        eq(index, 0)
+      });
+    },
+    'C. It should pass the array as the third position in callback parameter.': function() {
+      // fail();
+      var testArray = [1, 2, 3];
+      every(testArray, function (number, index, originalArray) {
+        eq(originalArray, testArray);
+      });
+    },   
+    'D. It should accept an optional this arguement.': function() {
+      // fail();
+      every([1], function () {
+        eq(this.description, 'I should be accessible inside the callback');
+      }, {description: 'I should be accessible inside the callback'});
+    }, 
+    'E. It should return a true if every element in an array satisfies a condition.': function() {
+      // fail();
+      var arrayTested = [1, 2]
+      var solution = every(arrayTested, function(number, index, array){
+        return number > 0;
+      });
+      eq(solution, true)
+    },
+    'F. If no value satisfies condition, it should return false.': function() {
+      // fail();
+      var solution = every([1, 2], function(number, index, array){
+        return number > 3;
+      });
+      eq(solution, false)
+    },
+    'G. It should run on every element in the array until an element returns false.': function() {
+      // fail();
+      var numberOfTimesRun = 0;
+      every([1, 2], function(number, index, array){
+        numberOfTimesRun++;
+        return number > 1;
+      });
+      eq(numberOfTimesRun, 1)
+    },
+    'H. It should return true for empty arrays.': function() {
+      // fail();
+      var numberOfTimesRun = 0;
+      every([], function(){
+        numberOfTimesRun++;
+      }); 
+      eq(numberOfTimesRun, 0)
+    },
+    'I. It should not run on elements in the array with missing values.': function() {
+      // fail();
+      var numberOfTimesRun = 0;
+      every([1, , 2], function(number){
+        numberOfTimesRun++;
+        return number > 0; 
+      });
+      eq(numberOfTimesRun, 2)
+    }
+  });
+</script>

@@ -1,0 +1,134 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.slice([begin[, end]]);
+
+
+// Definition:
+// A. It should accept an optional startIndex.
+// B. It should accept an optional endIndex.
+// C. It should generate a shallow copy of an array.
+// D. It should not modify the original array.
+// E. It should accept a negative startIndex, indicating an offset from the end of the sequence.
+// F. It should start at 0 if startIndex is undefined. 
+// G. It should return an empty array if the startIndex is greater than the index range of the sequence. 
+// H. It should not include the endIndex in the slice. 
+// I. It should extract through the end of sequence if no endIndex is provided. 
+// J. It should extract through the end of the sequence if endIndex is greater than length of sequence. 
+// K. It should modify the generated sliced array if the original array is modified.
+// L. It should return an array.
+
+
+// Callback parameters: 
+
+
+// Returns new array containing extracted elements. 
+
+// Example: 
+// var like = ['rain', 'books', 'food', 'cats'];
+// like.slice(2)
+// expected: ['food', 'cats']
+// like.slice(1, 2)
+// expected: ['books', 'food']
+
+
+// Actual Code:
+function slice(array, startIndex, endIndex) {
+  var returnArray = []; 
+// If no startIndex:
+  if (arguments.length < 2) {
+    var startIndex = 0;
+  }
+// If startIndex is greater than the length of the array:
+    if (startIndex > array.length) {
+      return returnArray;
+    } 
+// If negative startIndex: 
+    if (startIndex < 0) {
+      startIndex = array.length + startIndex;
+    }
+// If no endIndex:
+if (arguments.length < 3) {
+    var endIndex = array.length;
+  }
+// If endIndex is greater than sequence length:
+  if (endIndex > array.length) {
+    endIndex = array.length;
+  }
+  for(var i = startIndex; i < endIndex; i++) {
+    returnArray.push(array[i]);
+  }
+  return returnArray;
+};
+
+  tests({
+    'A. It should accept an optional startIndex.': function() {
+      var like = ['rain', 'books', 'food', 'cats']
+      var likeSlice1 = slice(like, 1)
+      eq(JSON.stringify(likeSlice1), JSON.stringify(['books', 'food', 'cats']));
+      var likeSlice2 = slice(like)
+      eq(JSON.stringify(likeSlice2), JSON.stringify(['rain', 'books', 'food', 'cats']));
+    },
+    'B. It should accept an optional endIndex.': function() {
+      var like = ['rain', 'books', 'food', 'cats']
+      var likeSlice = slice(like, 1, 2)
+      eq(JSON.stringify(likeSlice), JSON.stringify(['books']));
+    },
+    'C. It should generate a shallow copy of an array.': function() {
+      var like = ['rain', 'books', 'food', 'cats']
+      var likeSlice = slice(like)
+      eq(JSON.stringify(likeSlice), JSON.stringify(['rain', 'books', 'food', 'cats']));
+    },   
+    'D. It should not modify the original array.': function() {
+      var like = ['rain', 'books', 'food', 'cats']
+      var likeSlice = slice(like, 1, 2)
+      eq(JSON.stringify(like), JSON.stringify(['rain', 'books', 'food', 'cats']));
+      eq(JSON.stringify(likeSlice), JSON.stringify(['books']));
+    }, 
+    'E. It should accept a negative startIndex, indicating an offset from the end sequence.': function() {
+      var like = ['rain', 'books', 'food', 'cats']
+      var likeSlice = slice(like, -2)
+      eq(JSON.stringify(likeSlice), JSON.stringify(['food', 'cats']));
+    },
+    'F. It should start at 0 if startIndex is undefined. ': function() {
+      var like = ['rain', 'books', 'food', 'cats']
+      var likeSlice = slice(like)
+      eq(JSON.stringify(likeSlice), JSON.stringify(['rain', 'books', 'food', 'cats']));
+    },
+    'G. It should return an empty array if the startIndex is > index range.': function() {
+      var like = ['rain', 'books', 'food', 'cats']
+      var likeSlice = slice(like, 6)
+      eq(JSON.stringify(likeSlice), JSON.stringify([]));
+    },
+    'H. It should not include the endIndex in the slice.': function() {
+      var like = ['rain', 'books', 'food', 'cats']
+      var likeSlice = slice(like, 1, 2)
+      eq(JSON.stringify(likeSlice), JSON.stringify(['books']));
+    },
+    'I. It should extract to the end of sequence if no endIndex is provided.': function() {
+      var like = ['rain', 'books', 'food', 'cats']
+      var likeSlice1 = slice(like, 1)
+      eq(JSON.stringify(likeSlice1), JSON.stringify(['books', 'food', 'cats']));
+      var likeSlice2 = slice(like)
+      eq(JSON.stringify(likeSlice2), JSON.stringify(['rain', 'books', 'food', 'cats']));
+    },
+    'J. It should extract to the end of the sequence if endIndex is > sequence length.': function() {
+      var like = ['rain', 'books', 'food', 'cats']
+      var likeSlice1 = slice(like, 1, 5)
+      eq(JSON.stringify(likeSlice1), JSON.stringify(['books', 'food', 'cats']));
+    },
+    'K. It should modify the generated sliced array if the original array is modified.': function() {
+      var like = [['rain'], 'books', 'food', 'cats']
+      var likeSlice = slice(like)
+      like[0].push('husband')
+      eq(JSON.stringify(likeSlice), JSON.stringify([['rain', 'husband'], 'books', 'food', 'cats']));
+    },
+    'L. It should return an array.': function() {
+      var like = ['rain', 'books', 'food', 'cats']
+      var likeSlice = slice(like)
+      eq(Array.isArray(likeSlice), true);
+    }
+  });
+
+</script>

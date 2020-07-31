@@ -1,0 +1,236 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.splice(start[, deleteCount[, item1[, item2[, ...]]]]);
+
+
+// Definition:
+// A. It should accept a start position.
+// B. It should delete until the end of array if no deleteCount provided.
+// C. It should accept an optional deleteCount.
+// D. It should return an array containing deleted items.
+// E. It should not remove any elements if deleteCount is negative or 0.
+// F. It should return an empty array if no items are deleted.
+// G. It should subtract start from array.length if start is negative.
+// H. It should begin at 0 if array.length + -start < 0.
+// I. It should delete until the end of array if end => array.length - start.
+// J. It should accept optional itemToAdd and add item in place.
+// K. It should add items to the end of the array if start is greater than array.length.
+
+// Returns an array containing deleted items.
+
+// Actual Code:
+function splice(array, start, deleteCount, ...itemToAdd) {
+  var returnArray = [];
+  var arraySliced = array.slice();
+  var count = 0;
+  var numOfItemToAdd = 0;
+  var toAddArray = []; // An array of items to be added to the the OG array.
+  var workingDeleteCount = deleteCount;
+  var skipNextStep = false;
+  var arrayLength = array.length;
+
+// if start is negative:
+  if (start < 0) {
+    start = array.length + start;
+    if (start < 0) {
+      start = 0;
+    }
+  }
+// if itemToAdd exists:
+// (does this cover this case of no deleteCount with items to add..? no..) NEEDS WORK FROM JAVASCRIPT.
+  if (arguments.length > 3) {
+    numOfItemToAdd = arguments.length - 3;
+// turning itemToAdd into an array:
+    for(var b = 3; b < arguments.length; b++) {
+      toAddArray.push(arguments[b])
+    }
+  }
+// if deleteCount is negative or 0 AND there's no items to add:
+  if (deleteCount <= 0 && arguments.length < 4) {
+    return returnArray;
+  }
+// if you are deleting more items than are left in the array after the start:
+// should deleteCount = 0 OR should it = array.length - start??? 
+  if (deleteCount >= array.length - start) {
+    deleteCount = 0;
+  }
+// making a return array:
+  for(var a = start; a < array.length; a++) {
+    returnArray.push(array[a]) 
+    count++ 
+  }
+
+// 1. if no itemToAdd:
+  if (numOfItemToAdd === 0) {
+    for(var i = start; i < array.length; i++) {
+      array[i] = array[i + deleteCount]
+    }    
+ } 
+// // 2. if deleteCount = numOfItemToAdd:
+  if (deleteCount === numOfItemToAdd) {
+    for (var j = 0, i = start; i < start + numOfItemToAdd; i++, j++) {
+      array[i] = toAddArray[j]
+      workingDeleteCount--
+    }
+  }
+// 3. if deleteCount > numOfItemToAdd:
+  if(numOfItemToAdd > 0 && deleteCount > numOfItemToAdd) {
+    for (var k = start, j = 0; k < start + numOfItemToAdd; k++) {
+      array[k] = toAddArray[j]
+      workingDeleteCount--
+    }
+    for (k = start + workingDeleteCount; k < array.length; k++) {
+      array[k] = array[k + workingDeleteCount]
+    }
+  }
+// 4. if deleteCount < numOfItemToAdd:
+  if(deleteCount > 0 && deleteCount < numOfItemToAdd) {
+    for (var l = start, j = 0; l < start + numOfItemToAdd; l++, j++) {
+      array[l] = toAddArray[j]
+    }
+    for (j = start + deleteCount, l = start + numOfItemToAdd; j < arraySliced.length; l++, j++) {
+      array[l] = arraySliced[j]
+    }
+    returnArray.length = returnArray.length + deleteCount - count;
+    return returnArray;
+  }
+// 5. if no deleteCount:
+  if(deleteCount <= 0 && arguments.length > 3 && start < array.length) {
+    for(var m = start, j =0; m < start + numOfItemToAdd; m++, j++) {
+      array[m] = toAddArray[j]
+    }
+    for (j = start + deleteCount, m = start + numOfItemToAdd; j < arraySliced.length; m++, j++) {
+      array[m] = arraySliced[j]
+    }
+    returnArray.length = 0;
+    return returnArray
+  }
+  if (deleteCount <= 0 && arguments.length > 3 && start >= array.length) {
+    for(j = 0; j < toAddArray.length; j++) {
+      array.push(toAddArray[j])
+    }
+    returnArray.length = 0;
+    return returnArray;
+  }
+
+// how to shorten: 
+  if(deleteCount){
+    array.length = array.length - workingDeleteCount;
+    returnArray.length = returnArray.length + deleteCount - count;
+  } else {
+    array.length = array.length - count;
+  }
+// Console.logging: 
+  console.log('count: ' + count)
+  console.log('deleteCount: ' + deleteCount)
+  console.log('numOfItemToAdd: ' + numOfItemToAdd)
+  console.log('returnArray: ' + returnArray);
+  console.log('array: ' + array);
+  console.log('toAddArray: ' + toAddArray)
+  return returnArray;
+};
+
+  tests({
+    'A. It should accept a start position.': function() {
+      var activities = ['skate', 'run', 'swim', 'hike', 'cook'];
+      var activitiesSplice = splice(activities, 2);
+      eq(JSON.stringify(activitiesSplice), JSON.stringify(['swim', 'hike', 'cook']));
+
+      eq(JSON.stringify(activities), JSON.stringify(['skate', 'run']));
+    },
+    'B. It should delete until the end of array if no deleteCount provided.': function() {
+      var activities = ['skate', 'run', 'swim', 'hike', 'cook'];
+      var activitiesSplice = splice(activities, 2);
+      eq(JSON.stringify(activitiesSplice), JSON.stringify(['swim', 'hike', 'cook']))
+
+      eq(JSON.stringify(activities), JSON.stringify(['skate', 'run']));
+    },
+    'C. It should accept an optional deleteCount.': function() {
+      var activities = ['a', 'b', 'c', 'd', 'e'];
+      var activitiesSplice = splice(activities, 2, 1);
+      eq(JSON.stringify(activitiesSplice), JSON.stringify(['c']))
+      eq(JSON.stringify(activities), JSON.stringify(['a', 'b', 'd', 'e']));
+
+      var activities2 = ['a', 'b', 'c', 'd', 'e'];
+      var activitiesSplice2 = splice(activities2, 2, 2);
+      eq(JSON.stringify(activitiesSplice2), JSON.stringify(['c','d']))
+      eq(JSON.stringify(activities2), JSON.stringify(['a', 'b', 'e']));
+    },
+    'D. It should return an array containing deleted items.': function() {
+      var activities = ['skate', 'run', 'swim', 'hike', 'cook'];
+      var activitiesSplice = splice(activities, 3);
+      eq(JSON.stringify(activitiesSplice), JSON.stringify(['hike', 'cook']));
+    },
+    'E. It should not remove any elements if deleteCount is negative or 0.': function() {
+      var activities = ['a', 'b', 'c', 'd', 'e'];
+      var activitiesSplice = splice(activities, 1, 0);
+      eq(JSON.stringify(activitiesSplice), JSON.stringify([]));
+
+      eq(JSON.stringify(activities), JSON.stringify(['a', 'b', 'c', 'd', 'e']));
+    },
+    'F. It should return an empty array if no items are deleted.': function() {
+      var activities = ['a', 'b', 'c', 'd', 'e'];
+      var activitiesSplice = splice(activities, 4, -4);
+      eq(JSON.stringify(activitiesSplice), JSON.stringify([]));
+    },
+    'G. It should subtract start from array.length if start is negative.': function() {
+      var activities = ['a', 'b', 'c', 'd', 'e'];
+      var activitiesSplice = splice(activities, -1, 1);
+      eq(JSON.stringify(activitiesSplice), JSON.stringify(['e']));
+
+      eq(JSON.stringify(activities), JSON.stringify(['a', 'b', 'c', 'd']));
+    },  
+    'H. It should begin at 0 if array.length + -start < 0.': function() {
+      var activities = ['a', 'b', 'c', 'd', 'e'];
+      var activitiesSplice = splice(activities, -6, 1);
+      eq(JSON.stringify(activitiesSplice), JSON.stringify(['a']));
+
+      eq(JSON.stringify(activities), JSON.stringify(['b', 'c', 'd', 'e']));
+    }, 
+    'I. It should delete until the end of array if end => array.length - start.': function() {
+      var activities = ['a', 'b', 'c', 'd', 'e'];
+      var activitiesSplice = splice(activities, 2, 5);
+      eq(JSON.stringify(activitiesSplice), JSON.stringify(['c','d', 'e']));
+
+      eq(JSON.stringify(activities), JSON.stringify(['a', 'b']));
+    },
+    'J. It should accept optional itemToAdd, Case 2. deleteCount = numOfItemToAdd': function() {
+      var activities = ['a', 'b', 'c', 'd', 'e'];
+      var activitiesSplice = splice(activities, 2, 1, '3');
+      eq(JSON.stringify(activitiesSplice), JSON.stringify(['c']));
+
+      eq(JSON.stringify(activities), JSON.stringify(['a', 'b', '3', 'd', 'e']));
+    },
+    'K. It should accept optional itemToAdd, Case 3: deleteCount > numOfItemToAdd': function() {
+      var activities = ['a', 'b', 'c', 'd', 'e'];
+      var activitiesSplice = splice(activities, 2, 2, '3');
+      eq(JSON.stringify(activitiesSplice), JSON.stringify(['c', 'd']));
+      eq(JSON.stringify(activities), JSON.stringify(['a', 'b', '3', 'e']));
+
+      var activities2 = ['a', 'b', 'c', 'd', 'e', 'f'];
+      var activitiesSplice2 = splice(activities2, 2, 2, '3');
+      eq(JSON.stringify(activitiesSplice2), JSON.stringify(['c', 'd']));
+      eq(JSON.stringify(activities2), JSON.stringify(['a', 'b', '3', 'e', 'f']));
+    },
+    'L. It should accept optional itemToAdd, Case 4: deleteCount < numOfItemToAdd': function() {
+      var activities2 = ['a', 'b', 'c', 'd', 'e', 'f'];
+      var activitiesSplice2 = splice(activities2, 2, 1, '3', '4');
+      eq(JSON.stringify(activitiesSplice2), JSON.stringify(['c']));
+      eq(JSON.stringify(activities2), JSON.stringify(['a', 'b', '3', '4', 'd', 'e', 'f']));
+    },
+    'M. It should accept optional itemToAdd, Case 5: no deleteCount': function() {
+      var activities2 = ['a', 'b', 'c', 'd', 'e', 'f'];
+      var activitiesSplice2 = splice(activities2, 2, 0, '3', '4');
+      eq(JSON.stringify(activities2), JSON.stringify(['a', 'b', '3', '4', 'c', 'd', 'e', 'f']));
+      eq(JSON.stringify(activitiesSplice2), JSON.stringify([]));
+    },
+    'N. It should add items to the end of the array if start is greater than array.length.': function() {
+      var activities2 = ['a', 'b', 'c', 'd', 'e', 'f'];
+      var activitiesSplice2 = splice(activities2, 7, 0, '3', '4');
+      eq(JSON.stringify(activities2), JSON.stringify(['a', 'b','c', 'd', 'e', 'f', '3', '4']));
+      eq(JSON.stringify(activitiesSplice2), JSON.stringify([]));
+    }   
+  });
+</script>

@@ -1,0 +1,130 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.sort([compareFunction]);
+
+
+// Definition:
+// A. It should convert each item in the array into strings and then access their UTF-16 code unit values. 
+// B. It should by default sort the array in ascending order of the first UTF-16 value of each element.
+// C. It should return the sorted array.
+// D. It should accept an optional compare function with two parameters, firstEl and secondEl, (a, b).
+// E. It should sort all undefined elements to the end of the array with no call to compare function.
+// F. It should sort a to an index lower than b, if compare(a, b) returns less than 0. 
+// G. It should leave a and b unchanged, but sorted with respect to different elements, if compare(a, b) returns 0.
+// H. It should sort b to an index lower than a, if compare(a, b) returns greater than 0.
+// I. It should always return the same value when given a specific (a, b), if inconsistent, sort order undefined.
+// J. It should be able to sort objects using a property, if desired.
+// K. It should sort numbers (whether they're numbers or numeric strings) correctly, if compare(a,b) is used.
+
+// Compare function parameters: 
+
+// firstEl = first element for comparison.
+// secondEl = second element for comparison.
+
+// Compare function form: 
+// function compare(a, b) {
+//   if (a is less than b by some ordering criterion) {
+//     return -1;
+//   }
+//   if (a is greater than b by the ordering criterion) {
+//     return 1;
+//   }
+//   // a must be equal to b
+//   return 0;
+// }
+
+// If comparing numbers instead of strings: 
+// function compareNumbers(a, b) {
+//   return a - b;
+// }
+
+// Returns the sorted array.
+
+// Example: 
+
+
+// Actual Code:
+function sort(array, callback) {
+  var charCodeArray = [];
+  var sortedChar = true;
+
+  for(var i = 0; i < array.length; i++) {
+    if(typeof array[i] !== 'string') {
+      array[i] = array[i].toString(); 
+    }
+    var charCodeFirst = array[i].charCodeAt(0);
+    charCodeArray.push(charCodeFirst)
+  }
+  do { 
+    sortedChar = true;
+    for(var j = 0; j < array.length - 1; j++) {
+      var results = array[j].charCodeAt(0) - array[j + 1].charCodeAt(0);
+      if(results > 0) {
+        sortedChar = false;
+        var temp = array[j];
+        array[j] = array[j + 1];
+        array[j + 1] = temp;
+      }
+    } console.log(charCodeArray)
+  } while (sortedChar === false)
+
+  console.log(array)
+  return array
+};
+
+  tests({
+    'A. It should convert each item into strings and then access their UTF-16 code unit values.': function() {
+      var fruit = ['oranges', 'apples', 'grapes', 'bananas', 'lemons'];
+      var fruitSort = sort(fruit);
+      eq(JSON.stringify(fruitSort), JSON.stringify(["apples","bananas","grapes","lemons","oranges"]));
+      eq(typeof fruitSort[0], 'string');
+
+      var number = [5, 30, 27, 100, 5000];
+      var numberSort = sort(number);
+      eq(JSON.stringify(numberSort), JSON.stringify(["100","27","30","5","5000"]))
+      eq(typeof numberSort[0], 'string')
+    },
+    'B. It should by default sort in ascending order of the first UTF-16 value of each element.': function() {
+      var fruit = ['oranges', 'apples', 'grapes', 'bananas', 'lemons'];
+      var fruitSort = sort(fruit);
+      eq(JSON.stringify(fruitSort), JSON.stringify(['apples','bananas','grapes','lemons', 'oranges']));
+      
+      var number = [5, 30, 27, 100, 5000];
+      var numberSort = sort(number);
+      eq(JSON.stringify(numberSort), JSON.stringify(['100', '27', '30', '5','5000']))
+    },
+    'C. It should return the sorted array.': function() {
+      fail();
+    },   
+    'D. It should accept an optional compare function with two parameters (a, b).': function() {
+      fail();
+      var array = [];
+      sort(array, function(a,b) {
+
+      })
+    }, 
+    'E. It should sort all undefined elements to the end with no call to compare function.': function() {
+      fail();
+    },
+    'F. It should sort a to an index lower than b, if compare(a, b) returns less than 0. ': function() {
+      fail();
+    },
+    'G. It should leave a-b alone (sorted with respect to different elements) if compare = 0.': function() {
+      fail();
+    },
+    'H. It should sort b to an index lower than a, if compare(a, b) returns greater than 0.': function() {
+      fail();
+    },
+    'I. It should always return the same value with specific (a, b), if not, order undefined.': function() {
+      fail();
+    },
+    'J. It should be able to sort objects using a property, if desired.': function() {
+      fail();
+    },
+    'K. It should sort numbers or numeric strings numerically, if compare(a,b) is used.': function() {
+      fail();
+    }
+  });
+</script>

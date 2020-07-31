@@ -1,0 +1,113 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.find(element[, index[, array]])[, thisArguement]);
+// array.find(function(currentValue, index, array), thisValue);
+
+// Definition:
+// A. It should pass the currentValue as the first position in callback parameter. 
+// B. It should pass the ith position as the second position in callback parameter. 
+// C. It should pass the array as the third position in callback parameter.
+// D. It should accept an optional this arguement. 
+// E. It should return the value of first element in an array that satisfies a condition.
+// F. If no value satisfies condition, it should return undefined. 
+// G. It should only run until condition is met. 
+// H. It should not execute for empty arrays.
+// I. It should run on arrays with missing values.
+// J. It should only execute on the original array. 
+
+// Callback parameters: 
+// currentValue, 
+// index, 
+// array 
+
+// Returns one value. 
+
+// Example: 
+// var arrayOfAges = [8, 20, 3, 44, 15];
+// function isAnAdult (age) {
+//   return age >= 18;  
+// };
+// arrayOfAges.find(isAnAdult);
+// expected: 20
+
+// Actual Code:
+function find(array, callback, optionalThis) {
+  var foundCallback = callback;
+
+  if (optionalThis) {
+    foundCallback = callback.bind(optionalThis);
+  }
+  var returnVal = undefined; 
+
+  for (var i = 0; i < array.length; i++){
+    if (foundCallback(array[i], i, array) === true) {
+      returnVal = array[i];
+      return returnVal;
+    }
+   }
+   return returnVal;
+};
+
+  tests({
+    'A. It should pass the currentValue as the first position in callback parameter.': function() {
+      find([1], function (currentValue) {
+      eq(currentValue, 1)
+     });
+    },
+    'B. It should pass the ith position as the second position in callback parameter.': function() {
+      find([1], function(currentValue, index){
+        eq(index, 0)
+      });
+    },
+    'C. It should pass the array as the third position in callback parameter.': function() {
+      var testArray = [1, 2, 3];
+      find(testArray, function (number, index, originalArray) {
+        eq(originalArray, testArray);
+      });
+    },   
+    'D. It should accept an optional this arguement.': function() {
+      find([1], function () {
+        eq(this.description, 'I should be accessible inside the callback');
+      }, {description: 'I should be accessible inside the callback'});
+    }, 
+    'E. It should return the value of first element in an array that satisfies a condition.': function() {
+      var arrayTested = [1, 2, 3, 4, 5]
+      var solution = find(arrayTested, function(number, index, array){
+        return number > 3;
+      });
+      eq(solution, 4)
+    },
+    'F. If no value satisfies condition, it should return undefined.': function() {
+      //fail();
+      var solution = find([1, 2, 3], function(number, index, array){
+        return number > 3;
+      });
+      eq(solution, undefined)
+    },
+    'G. It should only run until condition is met.': function() {
+      var numberOfTimesRun = 0;
+      find([1, 2, 3], function(number, index, array){
+        numberOfTimesRun++;
+        return number > 1;
+      });
+      eq(numberOfTimesRun, 2)
+    },
+    'H. It should not execute for empty arrays.': function() {
+      var numberOfTimesRun = 0;
+      find([], function(){
+        numberOfTimesRun++;
+      }); 
+      eq(numberOfTimesRun, 0)
+    },
+    'I. It should run on arrays with missing values.': function() {
+      var numberOfTimesRun = 0;
+      find([1, , 2, 3, 4], function(number){
+        numberOfTimesRun++;
+        return number > 1; 
+      });
+      eq(numberOfTimesRun, 3)
+    }
+  });
+</script>

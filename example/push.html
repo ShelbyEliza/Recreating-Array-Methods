@@ -1,0 +1,36 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.push(element[, ...[, elementN]]);
+
+// Definition:
+// A. It should accpet an array or an array-like object.
+// B. It should add an element to the last position in the array.
+
+// Returns a new length.
+
+// Actual Code:
+function push(array, newItem) {
+  var pushIndex = array.length;
+
+  for(var i = 1; i < arguments.length; i++) {
+    array[pushIndex] = arguments[i];
+    pushIndex++;
+  }
+  return array.length;
+};
+
+  tests({
+    'A. It should accpet an array or an array-like object.': function() {
+      var weather = ['rainy', 'sunny', 'windy'];
+      var weatherPushed = push(weather, 'snowy');
+      eq(weatherPushed, 4);
+    },
+    'B. It should add an element to the last position in the array.': function() {
+      var weather = ['rainy', 'sunny', 'windy'];
+      var weatherPushed = push(weather, 'snowy');
+      eq(JSON.stringify(weather), JSON.stringify(['rainy', 'sunny', 'windy','snowy']));
+    }
+  });
+</script>

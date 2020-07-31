@@ -1,0 +1,121 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.findIndex(callback(element[, index[, array]])[, thisArguement]);
+// array.findIndex(function(currentValue, index, array), thisValue);
+
+// Definition:
+// A. It should pass the currentValue as the first position in callback parameter. 
+// B. It should pass the ith position as the second position in callback parameter. 
+// C. It should pass the array as the third position in callback parameter.
+// D. It should accept an optional this arguement. 
+// E. It should return the index of first element in an array that satisfies a condition.
+// F. If no value satisfies condition, it should return -1. 
+// G. It should only run until condition is met. 
+// H. It should return -1 if the array's length is 0.
+// I. It should run on arrays with missing values.
+// J. It should only execute on the original array. 
+
+// Callback parameters: 
+// currentValue, 
+// index, 
+// array 
+
+// Returns one value. 
+
+// Example: 
+// var arrayOfAges = [8, 20, 3, 44, 15];
+// function isAnAdult (age) {
+//   return age >= 18;  
+// };
+// arrayOfAges.findIndex(isAnAdult);
+// expected: 1
+
+// Actual Code:
+function findIndex(array, callback, optionalThis) {
+  var foundCallback = callback;
+
+  if (optionalThis) {
+    foundCallback = callback.bind(optionalThis);
+  }
+  var returnVal = -1; 
+
+  for (var i = 0; i < array.length; i++){
+    if (foundCallback(array[i], i, array) === true && array.length > 0) {
+      returnVal = array.indexOf(array[i]);
+      return returnVal;
+    }
+  }
+  return returnVal;
+};
+
+  tests({
+    'A. It should pass the currentValue as the first position in callback parameter.': function() {
+      // fail();
+      findIndex([1], function (currentValue) {
+      eq(currentValue, 1)
+     });
+    },
+    'B. It should pass the ith position as the second position in callback parameter.': function() {
+      // fail();
+      findIndex([1], function(currentValue, index){
+        eq(index, 0)
+      });
+    },
+    'C. It should pass the array as the third position in callback parameter.': function() {
+      // fail();
+      var testArray = [1, 2, 3];
+      findIndex(testArray, function (number, index, originalArray) {
+        eq(originalArray, testArray);
+      });
+    },   
+    'D. It should accept an optional this arguement.': function() {
+      // fail();
+      findIndex([1], function () {
+        eq(this.description, 'I should be accessible inside the callback');
+      }, {description: 'I should be accessible inside the callback'});
+    }, 
+    'E. It should return the index of first element in an array that satisfies a condition.': function() {
+      // fail();
+      var arrayTested = [1, 2, 3, 4, 5]
+      var solution = findIndex(arrayTested, function(number, index, array){
+        return number > 3;
+      });
+      eq(solution, 3)
+    },
+    'F. If no value satisfies condition, it should return -1.': function() {
+      // fail();
+      var solution = findIndex([1, 2, 3], function(number, index, array){
+        return number > 3;
+      });
+      eq(solution, -1)
+    },
+    'G. It should only run until condition is met.': function() {
+      // fail();
+      var numberOfTimesRun = 0;
+      findIndex([1, 2, 3], function(number, index, array){
+        numberOfTimesRun++;
+        return number > 1;
+      });
+      eq(numberOfTimesRun, 2)
+    },
+    "H.It should return -1 if the array's length is 0.": function() {
+      // fail();
+      var numberOfTimesRun = -1;
+      findIndex([], function(){
+        numberOfTimesRun++;
+      }); 
+      eq(numberOfTimesRun, -1)
+    },
+    'I. It should run on arrays with missing values.': function() {
+      // fail();
+      var numberOfTimesRun = 0;
+      findIndex([1, , 2, 3, 4], function(number){
+        numberOfTimesRun++;
+        return number > 1; 
+      });
+      eq(numberOfTimesRun, 3)
+    }
+  });
+</script>

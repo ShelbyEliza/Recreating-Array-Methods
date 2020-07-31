@@ -1,0 +1,135 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.some(callback(element[, index[, array]])[, thisArguement]);
+// array.some(function(currentValue, index, array), thisValue);
+
+// Definition:
+// A. It should pass the currentValue as the first position in callback parameter. 
+// B. It should pass the ith position as the second position in callback parameter. 
+// C. It should pass the array as the third position in callback parameter.
+// D. It should accept an optional this arguement. 
+// E. It should return a true if any element in an array satisfies a condition.
+// F. If no value satisfies the condition, it should return false. 
+// G. It should run on every element in the array until an element returns false. 
+// H. It should return false for empty arrays.
+// I. It should not run on elements in the array with missing values.
+// J. It should only execute on the original array. 
+
+// Callback parameters: 
+// currentValue, 
+// index, 
+// array 
+
+// Returns a boolean value. 
+
+// Example: 
+// var arrayOfAges = [8, 20, 3, 44, 15];
+// function isAnAdult (age) {
+//   return age >= 18;  
+// };
+// arrayOfAges.some(isAnAdult);
+// expected: true.
+
+// Actual Code:
+function some(array, callback, optionalThis) {
+  var someCallback = callback;
+  var arrayIndexes = Object.keys(array);
+  var returnVal = false; 
+
+// if optionalThis exists, bind someCallback to this.
+  if (optionalThis) {
+    someCallback = callback.bind(optionalThis);
+  }
+
+// if array is empty return true
+  if (arrayIndexes.length === 0) {
+      returnVal = false;
+    };
+
+// for each element, check if condition is true, if so return true. 
+  for (var i = 0; i < array.length; i++){
+    if (i in array) {
+      if (someCallback(array[i], i, array) === true) {
+        returnVal = true;
+        return returnVal;
+      }
+    }
+   }
+   return returnVal;
+};
+
+  tests({
+    'A. It should pass the currentValue as the first position in callback parameter.': function() {
+      // fail();
+      some([1], function (currentValue) {
+      eq(currentValue, 1)
+     });
+    },
+    'B. It should pass the ith position as the second position in callback parameter.': function() {
+      // fail();
+      some([1], function(currentValue, index){
+        eq(index, 0)
+      });
+    },
+    'C. It should pass the array as the third position in callback parameter.': function() {
+      // fail();
+      var testArray = [1, 2, 3];
+      some(testArray, function (number, index, originalArray) {
+        eq(originalArray, testArray);
+      });
+    },   
+    'D. It should accept an optional this arguement.': function() {
+      // fail();
+      some([1], function () {
+        eq(this.description, 'I should be accessible inside the callback');
+      }, {description: 'I should be accessible inside the callback'});
+    }, 
+    'E. It should return a true if any element in an array satisfies a condition.': function() {
+      // fail();
+      var arrayTested = [1, 2]
+      var numberOfTimesRun = 0;
+      var solution = some(arrayTested, function(number, index, array){
+        numberOfTimesRun++;
+        return number > 0;
+      });
+      eq(solution, true)
+      eq(numberOfTimesRun, 1)
+    },
+    'F. If no value satisfies condition, it should return false.': function() {
+      // fail();
+      var numberOfTimesRun = 0;
+      var solution = some([1, 2], function(number, index, array){
+        numberOfTimesRun++;
+        return number > 3;
+      });
+      eq(solution, false)
+      eq(numberOfTimesRun, 2)
+    },
+    'G. It should run on every element in the array until an element returns false or true.': function() {
+      // fail();
+      var numberOfTimesRun = 0;
+      some([1, 2], function(number, index, array){
+        numberOfTimesRun++;
+        return number > 1;
+      });
+      eq(numberOfTimesRun, 2)
+    },
+    'H. It should return false for empty arrays.': function() {
+      // fail();
+      var solution = some([], function(){}); 
+      
+      eq(solution, false)
+    },
+    'I. It should not run on elements in the array with missing values.': function() {
+      // fail();
+      var numberOfTimesRun = 0;
+      some([2,, 1], function(number){
+        numberOfTimesRun++;
+        return number > 3; 
+      });
+      eq(numberOfTimesRun, 2)
+    }
+  });
+</script>

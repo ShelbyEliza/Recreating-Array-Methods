@@ -1,0 +1,96 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.includes(valueToFind[, fromIndex]);
+
+
+// Definition:
+// A. It should pass valueToFind as the first parameter. 
+// B. It should pass an optional fromIndex as the second parameter.
+// C. It should start search at (array.length + fromIndex), if fromIndex is negative. 
+// D. It should return false if fromIndex is greater than or equal to the array.length.
+// E. It should searchStart = 0 if -(fromIndex) & the computed index is <= to -(array.length). 
+// F. It should searchStart = abs(computed index) if -(fromIndex) & the computed index is > -(array.length) & < 0.
+// G. It should function on array-like objects.
+
+// Returns a boolean. 
+
+// Example: 
+// var kitties = ['Seneca', 'Freya', 'Nico']
+// console.log(kitties.includes('Nico'));
+// expected: true.
+
+// var numbers = [1, 2, 3, 4, 5, 6]
+// console.log(numbers.includes(3, -2));
+// expected: false.
+
+// var food = ['milk', 'cheese', 'bread', 'eggs', 'veggies']
+//       var arrayIncludes1 = includes(food,'cheese', -8);
+//       eq(arrayIncludes1, true);
+
+// Actual Code:
+function includes(array, valueToFind, fromIndex) {
+  var returnValue = false;
+  var searchStart = 0; 
+  
+  if(fromIndex) {
+    searchStart = fromIndex;
+    if(fromIndex < 0){
+      searchStart = array.length + fromIndex;
+      if(searchStart <= -(array.length)) {
+        searchStart = 0;
+      } else {
+        searchStart = Math.abs(searchStart);
+      }
+    } 
+    if(fromIndex >= array.length) {
+      returnValue = false;
+    }
+  }
+
+  for(var i = searchStart; i < array.length; i++){
+    if(array[i] === valueToFind) {
+      returnValue = true;
+    }
+  }
+  return returnValue;
+};
+
+  tests({
+    'A. It should pass valueToFind as the first parameter.': function(){ 
+      var food = ['milk', 'cheese', 'bread']
+      var arrayIncludes = includes(food,'cheese');
+      eq(arrayIncludes, true);
+    },
+    'B. It should pass an optional fromIndex as the second parameter.': function() {
+      var food = ['milk', 'cheese', 'bread', 'eggs', 'veggies']
+      var arrayIncludes = includes(food,'cheese', 3);
+      eq(arrayIncludes, false);
+    },
+    'C. It should start search at array.length + fromIndex, if fromIndex is negative.': function() {
+      var food = ['milk', 'cheese', 'bread', 'eggs', 'veggies']
+      var arrayIncludes1 = includes(food,'cheese', -3);
+      eq(arrayIncludes1, false);
+      var arrayIncludes2 = includes(food,'cheese', -4);
+      eq(arrayIncludes2, true);
+    },   
+    'D. It should return false if fromIndex is greater than or equal to the array.length.': function() {
+      var food = ['milk', 'cheese', 'bread', 'eggs', 'veggies']
+      var arrayIncludes = includes(food,'cheese', 6);
+      eq(arrayIncludes, false);
+    }, 
+    'E. It should searchStart = 0 if -(fromIndex) & the computed index is <= -(array.length).': function() {
+      var food = ['milk', 'cheese', 'bread', 'eggs', 'veggies']
+      var arrayIncludes = includes(food,'cheese', -8);
+      eq(arrayIncludes, false);
+      var arrayIncludes = includes(food,'cheese', -13);
+      eq(arrayIncludes, true);
+    },
+    'F. It should searchStart = abs(computed index) if -(fromIndex) & the computed index is > -(array.length) & < 0.': function() {
+      var food = ['milk', 'cheese', 'bread', 'eggs', 'veggies']
+      var arrayIncludes = includes(food,'cheese', -8);
+      eq(arrayIncludes, false);
+    }
+  });
+</script>

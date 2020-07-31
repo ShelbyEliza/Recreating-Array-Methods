@@ -1,0 +1,117 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// const newArray = oldArray.concat([value1[, value2[,...[, valueN]]]]);
+
+
+// Definition:
+// A. It should return an array. 
+// B. It should throw a syntaxError if the first arguement is not an array.
+// C. It should join two arrays together, one after another. 
+// D  It should not modify the original values being added.
+// E. It should keep nested arrays nested.
+// F. It should modify the generated concatenated array if the original array is modified. 
+// G. It should return the oringalArray if no vaule is provided to concatenate.
+ 
+
+// Returns a new array/value without modifying previous arrays. 
+
+// Example 1: 
+// var array1 = ['a', 'b', 'c'];
+// var array2 = ['d', 'e', 'f'];
+// var array3 = array1.concat(array2);
+// console.log(array3); expected: ['a', 'b', 'c', 'd', 'e', 'f'] 
+
+// Example 2:
+// var number1 = [[1]];
+// var number2 = [2, [3]];
+// const numbers = number1.concat(number2);
+// expected: console.log(numbers): [[1], 2, [3]];
+// modify the first element of number1:
+// number1[0].push(4);
+// expected: console.log(numbers): [[1, 4], 2, [3]];
+
+
+// Actual Code:
+function concat(array, ...arrays) {
+  if (!(array instanceof Array)){
+    throw new SyntaxError('First arguemnet is not type of array.')
+  };
+
+  var concatArray = array.slice();
+
+  for(var i = 0; i < arguments.length; i ++) {
+    // if multiple elements are combined:
+    if(arrays) {
+      concatArray.push(arrays.slice())
+    }
+  
+  }
+  return concatArray;
+};
+
+  tests({
+    'A. It should return an array. ': function() {
+      var array1 = [1]
+      var array2 = [2]
+      var arrayConcat = array1.concat(array2);
+      eq(Array.isArray(arrayConcat), true);
+    },
+    'B. It should throw a syntaxError if the first arguement is not an array.': function() {
+      var value1 = 'a';
+      var value2 = 'c';
+      var isSyntaxError = false;
+      try {
+        concat(value1, value2);
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError)  
+      }
+      eq(isSyntaxError, true);
+
+    },
+    'C. It should combine two values/arrays together, one after another. ': function() {
+      var array1 = [1, 2];
+      var array2 = [3, 4];
+      var arrayConcat = array1.concat(array2)
+      eq(arrayConcat[0], [1])
+      eq(arrayConcat[1], 2)
+      eq(arrayConcat[2], 3)
+      eq(arrayConcat[3], 4)
+      eq(arrayConcat.length, 4)
+      eq(Array.isArray(arrayConcat), true);
+      eq(JSON.stringify(arrayConcat), JSON.stringify([1, 2, 3, 4]));
+    },
+    'D. It should not modify the original values being added.': function() {
+      var array1 = [1, 2];
+      var array2 = [3, 4];
+      var arrayConcat = array1.concat(array2)
+      eq(array1[0], [1])
+      eq(array2[0], 3)
+    },
+    'E. It should keep nested arrays nested.': function() {
+      var array1 = [[1]];
+      var array2 = [3];
+      var arrayConcat = array1.concat(array2)
+      eq(arrayConcat[1], 3)
+      eq(arrayConcat.length, 2)
+      eq(Array.isArray(arrayConcat[0]), true);
+      eq(Array.isArray(arrayConcat[1]), false);
+    },   
+    'F. It should modify the generated concatenated array if the original array is modified.': function() {
+      var array1 = [[0], 2]
+      var array2 = [3];
+
+      var arrayConcat = array1.concat(array2)
+      array1[0].push([1]);
+      eq(JSON.stringify(arrayConcat), JSON.stringify([[0, [1]], 2, 3]));
+    }, 
+    'G. It should return the oringalArray if no vaule is provided to concatenate.': function() {
+      var element1 = 'a, b';
+      var elementConcat = element1.concat();
+      eq(elementConcat, 'a, b')
+    }
+  });
+
+
+</script>

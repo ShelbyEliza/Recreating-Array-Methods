@@ -1,0 +1,46 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.reverse();
+
+
+// Definition:
+// A. It should accept an array.
+// B. It should reverse that array in place.
+// C. It should modify the originalArray.
+
+// Returns modified array.
+
+// Actual Code:
+function reverse(array) {
+  var mid = Math.floor(array.length / 2);
+
+  for(var i = 0; i < mid; i++) {
+    var indexLength = array.length - 1;
+    var el = array[i];
+    array[i] = array[indexLength - i];
+    array[indexLength - i] = el;
+  };
+
+  return array;
+};
+
+  tests({
+    'A. It should accept an array.': function() {
+      var places = ['Fayetteville', 'Littleton', 'Portland', 'Idaho', 'Montana'];
+      var placesReverse = reverse(places);
+      eq(JSON.stringify(placesReverse), JSON.stringify(['Montana','Idaho','Portland', 'Littleton', 'Fayetteville']))
+    },
+    'B. It should reverse that array in place.': function() {
+      var places = ['Fayetteville', 'Littleton'];
+      var placesReverse = reverse(places);
+      eq(JSON.stringify(placesReverse), JSON.stringify(['Littleton', 'Fayetteville']))
+    },
+    'C. It should modify the originalArray.': function() {
+      var places = ['Fayetteville', 'Littleton', 'Portland', 'Idaho', 'Montana'];
+      var placesReverse = reverse(places);
+      eq(JSON.stringify(places), JSON.stringify(['Montana','Idaho','Portland', 'Littleton', 'Fayetteville']))
+    }
+  });
+</script>

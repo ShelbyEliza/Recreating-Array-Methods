@@ -1,0 +1,91 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.indexOf(searchElement[, fromIndex]);
+
+// Definition:
+// A. It should pass the search element as the first parameter. 
+// B. It should pass the fromIndex as the second parameter, if given. 
+// C. It should return the index of the searchElement.
+// D. It should return -1, if no index is found. 
+// E. It should only run until the index is found.
+// F. It should start offset from the end of the array, if given a negative fromIndex.
+// G. It should use strict equals.
+
+// Returns one index. 
+
+// Example: 
+// var fruit = ['apple', 'orange', 'lemon', 'peach'];
+// console.log(fruit.indexOf('orange'));
+// expected: 1
+// console.log(fruit.indexOf('peach', 1));
+// expected: 3
+
+
+// Actual Code:
+function indexOf(searchElement, fromIndex) {
+  var returnIndex = -1;
+  var searchStart = 0;
+
+  if (fromIndex) {
+    searchStart = fromIndex
+      if (fromIndex >= arguments.length) {
+        return returnIndex;
+      }
+      if (fromIndex < 0) {
+        searchStart = arguments.length + (fromIndex)
+      }
+  } 
+  for(var i = searchStart; i <arguments.length; i++) {
+      if (searchElement === array[i]) {
+        returnIndex = i;
+        break;
+      }
+  }
+  return returnIndex;
+};
+
+  tests({
+    'A. It should pass the search element as the first parameter. ': function() {
+      var array = [1, 2, 3, 4];
+      var indexOfArray = array.indexOf(2)
+      eq(indexOfArray, 1)
+    },
+    'B. It should pass the fromIndex as the second parameter, if given.': function() {
+      var array = [1, 2, 3, 4];
+      var indexOfArray1 = array.indexOf(4, 1)
+      eq(indexOfArray1, 3)
+      var indexOfArray2 = array.indexOf(1, 2)
+      eq(indexOfArray2, -1)
+
+    },
+    'C. It should return the index of the searchElement.': function() {
+      var array = [1, 2, 3, 4];
+      var indexOfArray = array.indexOf(3)
+      eq(indexOfArray, 2)
+    },   
+    'D. It should return -1, if no index is found.': function() {
+      var array = [1, 2, 3, 4];
+      var indexOfArray = array.indexOf(5)
+      eq(indexOfArray, -1)
+    }, 
+    'E. It should only run until the index is found.': function() {
+      var array = [1, 2, 3, 4, 4];
+      var indexOfArray1 = array.indexOf(4, 0)
+      eq(indexOfArray1, 3)
+      var indexOfArray2 = array.indexOf(2, 2)
+      eq(indexOfArray2, -1)
+    },
+    'F. It should start offset from the end of the array, if given a negative fromIndex.': function() {
+      var array = [1, 2, 3, 4];
+      var indexOfArray = array.indexOf(4, -1)
+      eq(indexOfArray, 3)
+    },
+    'G. It should use strict equals. ': function() {
+      var array = [1, 2, 3, [4]];
+      var indexOfArray = array.indexOf(4)
+      eq(indexOfArray, -1)
+    }
+  });
+</script>

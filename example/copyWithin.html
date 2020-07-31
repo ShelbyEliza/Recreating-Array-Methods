@@ -1,0 +1,135 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.copyWithin(target[, start[, end]]);
+
+
+// Definition:
+// A. It should accept a target to move to within the array.
+// B. It should accept an optional start value.
+// C. It should accpet an optional end value.
+// D. It should not modify the array.length.
+// E. It should count target from the array.length position if target is negative. 
+// F. It should not copy anything if the target is at or greater than array.length.
+// G. It should trim the copied sequence to fit array.length if the target is positioned after start.
+// H. It should count the start from the array.length position if start is negative.
+// I. It should count the end from the array.length position if end is negative.
+
+// Returns modified array.
+
+// Target is where to copy to. Not optional.
+
+// Example: 
+
+// var music = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh']; 
+// copyWithin(music, -2) | expected: ['Doe', 'Ray', 'Mee', 'Doe', 'Ray']
+// copyWithin(music, 0, 3) | expected: ['Faa', 'Soh', 'Mee', 'Faa', 'Soh']
+// copyWithin(music, 0, 3, 4) | expected: ['Faa', 'Ray', 'Mee', 'Faa', 'Soh']
+// copyWithin(music, -2, -3, -1) | expected: ['Doe', 'Ray', 'Mee', 'Mee', 'Faa']
+
+    // console.log("i = " + i + ", startPosition = " + startPosition)
+    // console.log("array[i] = " + array[i] + ", arrayCopy[startPosition] = " + arrayCopy[startPosition])
+
+// Actual Code:
+function copyWithin(array, target, startIndex, endIndex) {
+  var targeted = 0;
+  var startPosition = 0;
+  var endPostion = array.length;
+  var arrayCopy = array.slice();
+
+  if(target) {
+    targeted = target;
+    if(targeted < 0) {
+      targeted = array.length + targeted;
+    }
+    if(targeted >= array.length) {
+      return array;
+    }
+  }
+  if(startIndex) {
+    startPosition = startIndex;
+    if(startPosition < 0) {
+      startPosition = array.length + startPosition;
+    }
+  }
+  if(endIndex) {
+    endPostion = endIndex;
+    if(endPostion < 0) {
+      endPostion = array.length + endPostion;
+    }
+  }
+
+  for(var i = targeted; i < array.length; i++) {
+    array[i] = arrayCopy[startPosition];
+
+    startPosition++;
+    if(startPosition >= endPostion) {
+      break;
+    }
+
+  }
+  return array;
+};
+
+  tests({
+    'A. It should accept a target to move within the array.': function() {
+      var music = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy = copyWithin(music, 2);
+      eq(JSON.stringify(musicCopy), JSON.stringify(['Doe', 'Ray', 'Doe', 'Ray', 'Mee']))
+    },
+    'B. It should accept an optional start value.': function() {
+      var music = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy = copyWithin(music, 2, 4);
+      eq(JSON.stringify(musicCopy), JSON.stringify(['Doe', 'Ray', 'Soh', 'Faa', 'Soh']))
+    },
+    'C. It should accpet an optional end value.': function() {
+      var music1 = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy1 = copyWithin(music1, 3, 2, 3);
+      eq(JSON.stringify(musicCopy1), JSON.stringify(['Doe', 'Ray', 'Mee', 'Mee', 'Soh']));
+
+      var music2 = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy2 = copyWithin(music2, 1, 2, 4);
+      eq(JSON.stringify(musicCopy2), JSON.stringify(['Doe', 'Mee', 'Faa', 'Faa', 'Soh']));
+
+      var music3 = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy3 = copyWithin(music3, 4, 2, 3);
+      eq(JSON.stringify(musicCopy3), JSON.stringify(['Doe', 'Ray', 'Mee', 'Faa', 'Mee']));
+    },   
+    'D. It should not modify the array.length.': function() {
+      var music = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy = copyWithin(music, 3, 1, 4);
+      eq(JSON.stringify(musicCopy), JSON.stringify(['Doe', 'Ray', 'Mee', 'Ray', 'Mee']))
+      eq(music.length, musicCopy.length)
+    }, 
+    'E. It should count target from the array.length position if target is negative.': function() {
+      var music1 = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy1 = copyWithin(music1, -2, 0, 1);
+      eq(JSON.stringify(musicCopy1), JSON.stringify(['Doe', 'Ray', 'Mee', 'Doe', 'Soh']));
+    },
+    'F. It should no copy anything if the target is at or greater than array.length.': function() {
+      var music1 = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy1 = copyWithin(music1, 10, 0, 1);
+      eq(JSON.stringify(musicCopy1), JSON.stringify(['Doe', 'Ray', 'Mee', 'Faa', 'Soh']));
+
+      var music2 = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy2 = copyWithin(music2, 5, 0, 1);
+      eq(JSON.stringify(musicCopy2), JSON.stringify(['Doe', 'Ray', 'Mee', 'Faa', 'Soh']));
+    },
+    'G. It should trim the copied sequence to fit array.length if the target is positioned after start.': function() {
+      var music = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy = copyWithin(music, 4, 1, 3);
+      eq(JSON.stringify(musicCopy), JSON.stringify(['Doe', 'Ray', 'Mee', 'Faa', 'Ray']));
+    },
+    'H. It should count the start from the array.length position if start is negative.': function() {
+      var music = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy = copyWithin(music, 3, -3);
+      eq(JSON.stringify(musicCopy), JSON.stringify(['Doe', 'Ray', 'Mee', 'Mee', 'Faa']));
+    },
+    'I. It should count the end from the array.length position if end is negative.': function() {
+      var music = ['Doe', 'Ray', 'Mee', 'Faa', 'Soh'];
+      var musicCopy = copyWithin(music, 3, 2, -2);
+      eq(JSON.stringify(musicCopy), JSON.stringify(['Doe', 'Ray', 'Mee', 'Mee', 'Soh']));
+    }
+  });
+</script>

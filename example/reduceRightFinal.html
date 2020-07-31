@@ -1,0 +1,161 @@
+<script src="../simpletest.js"></script>
+<script>
+
+// function callback(resultSoFar, currentValue, index, array) {
+    
+//     return accumulator + currentValue;
+//   }
+
+// Requirements:
+
+  // A. If initialValue exists, 
+    // A.1 previousValue should start with initialValue.  
+    // A.2 currentValue should start with last value in the array. 
+    // A.3 callback should start at last element in array.  
+
+  // B. If no initialValue exists, 
+    // B.1 previousValue should start with last element in array.
+    // B.2 currentValue should start with second to last value in the array. 
+    // B.3 callback should start at second to last index. 
+
+  // C. If initialValue exists and array is empty, return initialValue without calling callback. 
+  // D. If no initialValue exists and array has one element, return that element without calling callback. 
+  
+  // E. It should actually reduceRight. (sum up elements)
+  // F. Callback should exclude holes in the array. (e.g. [1, , 3, 4])
+  // G. If array is empty and no initialValue, throw TypeErrow.
+  // H. It should pass array as fourth arguement to callback. 
+
+function reduceRight(ogArray, callback, initialValue) {
+  var length = ogArray.length;
+  var startingIndex = length - 1;
+  var arrayIndexes = Object.keys(ogArray);
+  var resultSoFar = initialValue;
+
+  // No initialValue exists: 
+  if (arguments.length < 3) {
+    resultSoFar = ogArray[startingIndex];
+    startingIndex--  
+// And array is empty, throw TypeError:
+  if (arrayIndexes.length === 0) {
+    throw new TypeError('Reduce of empty array with no initial value.') // new is a constructor, create a new obj.
+  };
+// If array has one element, just return that element:
+    if (arrayIndexes.length === 1) {
+      var onlyIndex = arrayIndexes[0] // onlyIndex is the index of the first? element with a key.
+      var onlyElement = ogArray[onlyIndex]; // onlyElement is the element with the index onlyIndex. 
+      return onlyElement; 
+    };
+  } 
+// initialValue is exists:
+  else { 
+// if array is empty, return initialValue:
+    if (arrayIndexes.length === 0) { 
+      return initialValue; 
+    } else {
+    resultSoFar = initialValue;
+    }
+  }
+  
+  console.log('length: ' + length)
+  console.log('resultSoFar: ' + resultSoFar)
+  console.log('startingIndex: ' + startingIndex)
+
+  for (var i = startingIndex; i >= 0; i--) {
+    if (i in ogArray) {
+      resultSoFar = callback(resultSoFar, ogArray[i], i, ogArray)
+    }
+  }
+  return resultSoFar; 
+};
+
+
+tests({
+  'A.1 If initialValue exists, callback should run array.length times.': function() {
+    var numberOfTimesCallbackHasRun = 0;  
+    reduceRight([1, 2, 3, 4], function() {
+      numberOfTimesCallbackHasRun++;  
+    }, 1)
+    eq(numberOfTimesCallbackHasRun, 4)
+  },
+  'A.2 If initialValue exists, previousValue should equal the initialValue.': function() {
+    reduceRight([1, 2, 3, 4], function(previousValue, currentValue, index, array) {
+      if (index === array.length - 1) {
+        eq(previousValue, 1)
+      }
+    }, 1)
+  }, 
+  'A.3 If initialValue exists, currentValue should start with last value in the array.': function() {
+    reduceRight([5], function(previousValue, currentValue, index, array) {
+      eq(currentValue, 5)
+    }, 1);
+  },  
+  'B.1 If NO initialValue exists, callback should run array.length - 1 times.': function() {
+    var numberOfTimesCallbackHasRun = 0;
+    reduceRight([1, 2, 3, 4], function() {
+      numberOfTimesCallbackHasRun++;
+    })
+    eq(numberOfTimesCallbackHasRun, 3)
+    },
+  'B.2 If NO initialValue exists, previousValue should start with last element in array.': function() {
+    reduceRight([0], function(previousValue, currentValue, index, array) {
+      eq(previousValue, 1);
+    }, 1);
+  },  
+  'B.3 If NO initialValue exists, currentValue should start with second to last value in the array. ': function() {
+    reduceRight([0], function(previousValue, currentValue, index, array) {
+      eq(currentValue, 0)
+    }, 1);
+  }, 
+  'C. If initialValue exists and array is empty, return initialValue without calling callback. ': function() {
+    var numberOfTimesCallbackHasRun = 0;
+    var initialValue = 0;
+    var reduceRightResult = reduceRight([,,], function() {
+      numberOfTimesCallbackHasRun++;
+    }, initialValue);
+    eq(reduceRightResult, initialValue)
+    eq(numberOfTimesCallbackHasRun, 0)
+  },
+  'D. If no initialValue exists and array has one element, return that element without calling callback.': function() {
+    var numberOfTimesCallbackHasRun = 0; 
+    var reduceRightResult = reduceRight([1], function() {
+      numberOfTimesCallbackHasRun++;
+    });
+    eq(reduceRightResult, 1);
+    eq(numberOfTimesCallbackHasRun, 0);
+  }, 
+  'E. It should actually reduceRight. (sum up elements)': function() {
+    var sum = reduceRight([1, 2, 3], function(a, b) {
+      return a + b;
+    }, 0);
+    eq(sum, 6);
+  },
+  'F.1 If initialValue exists, callback should exclude holes in the array.': function() {
+    var sum = reduceRight([, 2,, 4,,6], function(a, b) {
+      return a + b;
+    }, 0);
+    eq(sum, 12);
+  },
+  'F.2 If no initialValue exists, callback should exclude holes in the array.': function() {
+    var sum = reduceRight([, 2,, 4,,6], function(a, b) {
+      return a + b;
+    });
+    eq(sum, 12);
+  },
+  'G. If array is empty and no initialValue, throw TypeErrow.': function() {
+    var isTypeError = false;
+    try {
+      reduceRight([], function(){});
+    } catch(e) {
+      isTypeError = (e instanceof TypeError)  
+    }
+    eq(isTypeError, true);
+  },
+  'H. It should pass array as fourth arguement to callback.': function() {
+    var testArray = [1, 2]
+    reduceRight(testArray, function(previousValue, currentValue, currentIndex, arrayToReduce) {
+      eq(arrayToReduce, testArray);
+    });
+  }
+});
+</script>

@@ -1,0 +1,100 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.fill(replaceValue[, start[, end]]);
+
+
+// Definition:
+// A. It should accept a value to replace elements in array.
+// B. It should accept an optional start index.
+// C. It should accept an optional end index.
+// D. It should replace elements with replaceValue.
+// E. It should treat start as array.length + start, if start is negative.
+// F. It should treat end as array.length + end, if end is negative.
+// G. It should change the originalArray.
+// H. It should have each slot in array reference the object, if first parameter is an object.
+// I. It should return unmodified array if start equals end.
+
+
+// Returns modified array with replaceValue. 
+
+// Actual Code:
+function fill(array, replaceValue, startIndex, endIndex) {
+  var startPosition = 0; 
+  var endPosition = array.length;
+
+  if(startIndex) {
+    startPosition = startIndex;
+    if(startIndex < 0){
+      startPosition = array.length + startIndex;
+    };
+  };
+   
+  if(endIndex) {
+    endPosition = endIndex;
+    if (endIndex < 0) {
+      endPosition = array.length + endIndex;
+    };
+  };
+  if(startIndex && endIndex && startIndex === endIndex) {
+    return array;
+  }
+
+  for(var i = startPosition; i < endPosition; i++) {
+    array[i] = replaceValue;
+
+  };
+  return array;
+};
+
+  tests({
+    'A. It should accept a value to replace elements in array.': function() {
+      var foods = ['pickles', 'cakes', 'pasta'];
+      var foodsFill = fill(foods, 'pizza');
+      eq(JSON.stringify(foodsFill), JSON.stringify(['pizza', 'pizza', 'pizza']));
+    },
+    'B. It should accept an optional start index.': function() {
+      var foods = ['pickles', 'cakes', 'pasta'];
+      var foodsFill = fill(foods, 'pizza', 1);
+      eq(JSON.stringify(foodsFill), JSON.stringify(['pickles', 'pizza', 'pizza']));
+    },
+    'C. It should accept an optional end index.': function() {
+      var foods = ['pickles', 'cakes', 'pasta', 'eggs'];
+      var foodsFill = fill(foods, 'pizza', 1, 2);
+      eq(JSON.stringify(foodsFill), JSON.stringify(['pickles', 'pizza', 'pasta', 'eggs']));
+    },   
+    'D. It should replace elements with replaceValue.': function() {
+      var foods = ['pickles', 'cakes', 'pasta', 'eggs'];
+      var foodsFill = fill(foods, 'pizza', 1, 3);
+      eq(JSON.stringify(foodsFill), JSON.stringify(['pickles', 'pizza', 'pizza', 'eggs']));
+    }, 
+    'E. It should treat start as array.length + start, if start is negative.': function() {
+      var foods = ['pickles', 'cakes', 'pasta', 'cake', 'cheese'];
+      var foodsFill = fill(foods, 'pizza', -2);
+      eq(JSON.stringify(foodsFill), JSON.stringify(['pickles', 'cakes', 'pasta', 'pizza', 'pizza']));
+    },
+    'F. It should treat end as array.length + end, if end is negative.': function() {
+      var foods = ['pickles', 'cakes', 'pasta', 'biscuits', 'cheese'];
+      var foodsFill = fill(foods, 'pizza', 0, -3);
+      eq(JSON.stringify(foodsFill), JSON.stringify(['pizza', 'pizza', 'pasta', 'biscuits', 'cheese']));
+    },
+    'G. It should change the originalArray.': function() {
+      var foods = ['pickles', 'cakes', 'pasta', 'biscuits', 'cheese'];
+      var foodsFill = fill(foods, 'pizza', 0, -3);
+      eq(JSON.stringify(foods), JSON.stringify(['pizza', 'pizza', 'pasta', 'biscuits', 'cheese']));
+    },
+    'H. It should have each slot in array reference the object, if first parameter is an object.': function() {
+      var foods = ['cheese', 'pickles'];
+      var obj = {prop: 'food'}
+      var foodsFill = fill(foods, obj);
+      eq(JSON.stringify(foods), JSON.stringify([{prop: 'food'}, {prop: 'food'}]));
+    },
+    'I. It should return unmodified array if start equals end.': function() {
+     // does this work with 0, 0??
+      var foods = ['pickles', 'cakes', 'pasta', 'biscuits', 'cheese'];
+      var foodsFill = fill(foods, 'pizza', 1, 1);
+      eq(JSON.stringify(foodsFill), JSON.stringify(['pickles', 'cakes', 'pasta', 'biscuits', 'cheese']));
+    }
+  });
+</script>

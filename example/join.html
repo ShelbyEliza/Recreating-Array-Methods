@@ -1,0 +1,80 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.join([separator]);
+
+
+// Definition:
+// A. It should take an array or array-like object. 
+// B. It should accept an optional separator variable.
+// C. It should join the array items with commas if no separator is given. 
+// D. It should return one item without separator if only one item is given. 
+// E. It should join without any characters if the separator is a blank string. 
+// F. It should return an empty string if the array is empty. 
+
+// Returns a string. 
+
+// Actual Code:
+function join(array, separator) {
+  var arrayJoined = [];
+  var lastItemArray = array.pop();
+ 
+
+  if (arguments.length === 1) {
+    var separator = ',';
+  };
+  if (array.length === 1) {
+    return array[i];
+  }
+ 
+  for (var i = 0; i <array.length; i++) {
+    if (i in array) {
+      arrayJoined += array[i]  + separator;
+    }
+  };
+  
+  return arrayJoined + lastItemArray;
+};
+
+  tests({
+    'A. It should take an array or array-like object.': function() {
+      var ingredients = ['bread', 'mayo', 'tomato', 'turkey']
+      var ingredientsJoined = join(ingredients);
+      eq(ingredientsJoined, 'bread,mayo,tomato,turkey');
+    },
+    'B. It should accept an optional separator variable.': function() {
+      var ingredients = ['bread', 'mayo', 'tomato', 'turkey']
+      var separator = '-';
+      var ingredientsJoined = join(ingredients, separator);
+      eq(ingredientsJoined, 'bread-mayo-tomato-turkey');
+    },
+    'C. It should return one item without separator if only one item is given and no separator': function() {
+      var ingredients = ['bread']
+      var ingredientsJoined = join(ingredients);
+      eq(ingredientsJoined, 'bread');
+    },   
+    'D. It should return one item without separator if only one item is given.': function() {
+      var ingredients = ['bread'];
+      var separator = '!'
+      var ingredientsJoined = join(ingredients, separator);
+      eq(ingredientsJoined, 'bread');
+    }, 
+    'E. It should join without any characters if the separator is a blank string.': function() {
+      var ingredients = ['bread', 'mayo', 'tomato', 'turkey']
+      var separator = '';
+      var ingredientsJoined = join(ingredients, separator);
+      eq(ingredientsJoined, 'breadmayotomatoturkey');
+    },
+    'F. It should return an empty string if the array is empty.': function() {
+      var ingredients = ['']
+      var ingredientsJoined = join(ingredients);
+      eq(ingredientsJoined, '');
+    },
+    'F. It should return a string.': function() {
+      var ingredients = ['bread', 'mayo', 'tomato', 'turkey']
+      var ingredientsJoined = join(ingredients);
+      eq(typeof ingredientsJoined, 'string');
+    }
+  });
+</script>

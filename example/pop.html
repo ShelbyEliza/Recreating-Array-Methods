@@ -1,0 +1,57 @@
+<script src="../simpleTest.js"></script>
+<script>
+
+// Prototype implementation:  
+// array.pop();
+
+
+// Definition:
+// A. It should remove the last element from the array.
+// B. It should return the element removed.
+// C. It should return undefined if the array is empty.
+// D. 
+// E.
+// F. 
+// G. 
+// H. 
+// I. 
+// J. 
+
+// Callback parameters: 
+
+
+// Returns removed element from the array, undefined if array is empty. 
+
+// Example: 
+
+
+// Actual Code:
+function pop (array) {
+  if (array.length === 0 ) {
+    return undefined;
+  };
+
+  var lastElement = array[array.length - 1];
+  array.length--;
+  
+  return lastElement; 
+};
+
+  tests({
+    'A. It should remove the last element from the array.': function() {
+      var flowers = ['roses', 'lilies', 'buttercups', 'blue jazz'];
+      var flowersPopped = pop(flowers);
+      eq(flowers.length, 3);
+    },
+    'B. It should return the element removed.': function() {
+      var flowers = ['roses', 'lilies', 'buttercups', 'blue jazz'];
+      var flowersPopped = pop(flowers);
+      eq(flowersPopped, 'blue jazz');
+    },
+    'C. It should return undefined if the array is empty.': function() {
+      var flowers = [];
+      var flowersPopped = pop(flowers);
+      eq(flowersPopped, undefined)
+    }
+  });
+</script>
